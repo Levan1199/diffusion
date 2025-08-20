@@ -37,7 +37,7 @@ def main():
     ])
 
     train_dataset = CIFAR10(root='data', train=True, transform=transform, download=True)
-    train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)
+    train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True,num_workers=4)
 
     # === Model ===
     device = torch.device(args.device)
@@ -50,6 +50,11 @@ def main():
     if args.load_ckpt:
         print(f"[resume] {args.load_ckpt}")
         load_checkpoint(args.load_ckpt, model, optimizer, device)
+
+    print(f"start training, cuda: {torch.cuda.is_available()} using device {device}")
+    for i in range(torch.cuda.device_count()):
+        print(i, torch.cuda.get_device_name(i), "VRAM:", torch.cuda.get_device_properties(i).total_memory/1024**3, "GB")
+
 
 
     # === Training Loop ===
@@ -74,14 +79,15 @@ def main():
         avg = running_loss / len(train_loader)
         print(f"epoch {epoch} | loss {avg:.4f}")
 
-        torch.save({
-            "epoch": epoch,
-            "model_state_dict": model.state_dict(),
-            "encoder": model.encoder.state_dict(),
-            "decoder": model.decoder.state_dict(),
-            "optimizer_state_dict": optimizer.state_dict(),
-            "loss": avg,
-        },os.path.join(args.output_dir, f"ckpt_00_{epoch}.pt"))
+        if epoch % 10 == 0:
+            torch.save({
+                "epoch": epoch,
+                "model_state_dict": model.state_dict(),
+                "encoder": model.encoder.state_dict(),
+                "decoder": model.decoder.state_dict(),
+                "optimizer_state_dict": optimizer.state_dict(),
+                "loss": avg,
+            },os.path.join(args.output_dir, f"ckpt_00_{epoch}.pt"))
 
 
 if __name__ == "__main__":

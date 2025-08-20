@@ -3,7 +3,7 @@ import argparse
 import torch
 import torch.nn.functional as F
 from PIL import Image
-from network import VPPrecond
+from models.diffusion.networks import VPPrecond
 import numpy as np
 
 # --- paste edm_sampler() function here ---
