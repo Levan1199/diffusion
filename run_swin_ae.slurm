@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --job-name=diffusion_model_01              # Job name
-#SBATCH --output=diffusion_model_%j.log      # Standard output and error log
+#SBATCH --job-name=swin_ae             # Job name
+#SBATCH --output=swin_ae_%j.log      # Standard output and error log
 #SBATCH --ntasks=1                          # Run a single task
 #SBATCH --cpus-per-task=4                # Number of CPU cores per task
 #SBATCH --mem=16G                          # Total memory required (adjust as necessary)
