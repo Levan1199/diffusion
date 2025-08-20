@@ -21,4 +21,4 @@ pip install einops tqdm numpy argparse PIL matplotlib # insntal packages
 
 # run LLM
 cd /home/$USER/scratch/diffusion
-python pipeline/train_swin_ae.py
+python pipeline/train_swin_ae.py --epochs 200 --batch-size 82
