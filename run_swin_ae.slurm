@@ -16,9 +16,10 @@ source /home/$USER/scratch/hungProject/bin/activate
 pip install --no-index --upgrade pip
 pip install --no-index torch torchvision
 
-pip install einops tqdm numpy argparse PIL matplotlib # insntal packages
+pip install einops tqdm numpy argparse matplotlib # insntal packages
 
 
 # run LLM
 cd /home/$USER/scratch/diffusion
+export PYTHONPATH=$(pwd):$PYTHONPATH
 python pipeline/train_swin_ae.py --epochs 200 --batch-size 82
