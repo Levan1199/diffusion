@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from torchvision.datasets import CIFAR10, MNIST
+from torchvision.datasets import CIFAR10
 from torchvision import transforms
 import torchvision
 from models.swin_ae.swin_ae import SwinAutoencoder
@@ -19,6 +19,7 @@ def parse_args():
     p.add_argument("--load-ckpt", type=str, default=None, help="Path to checkpoint to resume from")
     p.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
     p.add_argument("--resume-optimizer", type=bool, default=False, help="Resume optimizer")
+    p.add_argument("--num-workers", type=int, default=4, help="Number of cpus")
     return p.parse_args()
 
 
@@ -40,7 +41,7 @@ def main():
     ])
 
     train_dataset = CIFAR10(root='data', train=True, transform=transform, download=True)
-    train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True,num_workers=4)
+    train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True,num_workers=args.num_workers)
 
     # === Model ===
     device = torch.device(args.device)
@@ -54,7 +55,7 @@ def main():
         print(f"[resume] {args.load_ckpt}")
         load_checkpoint(args.load_ckpt, model, optimizer, device, args.resume_optimizer)
 
-    print(f"start training, cuda: {torch.cuda.is_available()} using device {device}")
+    print(f"start training, cuda: {torch.cuda.is_available()} using device {device}, num_workers: {args.num_workers}")
     for i in range(torch.cuda.device_count()):
         print(i, torch.cuda.get_device_name(i), "VRAM:", torch.cuda.get_device_properties(i).total_memory/1024**3, "GB")
 
@@ -67,6 +68,7 @@ def main():
         running_loss = 0.0
         # pbar = tqdm(train_loader, desc=f"epoch {epoch}/{args.epochs}", leave=False)
 
+        # for imgs, _ in tqdm(pbar):
         for imgs, _ in train_loader:
             imgs = imgs.to(device)
             outputs = model(imgs)

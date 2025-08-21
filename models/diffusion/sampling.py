@@ -47,8 +47,8 @@ def edm_sampler(
 def build_model(device):
     net = VPPrecond(
         img_resolution=32,
-        img_channels=1,        # MNIST grayscale
-        label_dim=0,           # 0 = unconditional; set 10 if trained class-cond
+        img_channels=3,        # MNIST grayscale
+        label_dim=10,           # 0 = unconditional; set 10 if trained class-cond
         model_type='SongUNet',
         model_channels=64,
         channel_mult=[1, 2, 2],
@@ -69,6 +69,7 @@ def main():
     parser.add_argument("--ckpt-path", type=str, required=True, help="Path to the trained checkpoint")
     parser.add_argument("--out-dir", type=str, default="samples", help="Where to save generated images")
     parser.add_argument("--batch-size", type=int, default=16)
+    parser.add_argument("--class-label", type=int, default=0)
     args = parser.parse_args()
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -80,10 +81,11 @@ def main():
     # 2) Make latents
     latents = torch.randn(args.batch_size, net.img_channels, net.img_resolution, net.img_resolution, device=device)
 
-    # If class-conditional:
-    class_labels = None
-    # digits = torch.full((args.batch_size,), 5, device=device, dtype=torch.long)
-    # class_labels = F.one_hot(digits, num_classes=10).float()
+    # repeat the same class for the whole batch
+    cls_lbl = torch.full((args.batch_size,), args.class_label,
+                        device=device, dtype=torch.long)
+    class_labels = F.one_hot(cls_lbl, num_classes=10).float()
+
 
     # 3) Sample
     imgs = edm_sampler(
@@ -95,14 +97,13 @@ def main():
         sigma_max=80,
         rho=7,
     )
+    imgs_u8 = imgs.clamp(-1, 1).add(1).mul(127.5).to(torch.uint8)  # [B, 3, H, W]
+    imgs_u8 = imgs_u8.permute(0, 2, 3, 1).cpu().numpy()  # [B, H, W, 3]
 
-    # 4) Save
-    imgs_u8 = (imgs.clamp(-1, 1) * 127.5 + 128).to(torch.uint8)
-    imgs_u8 = imgs_u8.squeeze(1).cpu().numpy()
-
-    os.makedirs(args.out_dir, exist_ok=True)
     for i, arr in enumerate(imgs_u8):
-        Image.fromarray(arr, mode="L").resize((256, 256), Image.BICUBIC).save(os.path.join(args.out_dir, f"sample_{i:03d}.png"))
+        Image.fromarray(arr, mode="RGB").resize((256, 256), Image.BICUBIC).save(
+            os.path.join(args.out_dir, f"sample_{i:03d}.png"))
+
 
 if __name__ == "__main__":
     main()
