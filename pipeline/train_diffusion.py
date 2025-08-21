@@ -58,13 +58,6 @@ def save_checkpoint(save_dir, epoch, net, opt, loss_val):
         "loss": float(loss_val),
     }, ckpt_path)
     # also write/overwrite a latest pointer for convenience
-    latest = os.path.join(save_dir, "latest.pt")
-    torch.save({
-        "epoch": epoch,
-        "model_state": net.state_dict(),
-        "optimizer_state": opt.state_dict(),
-        "loss": float(loss_val),
-    }, latest)
     return ckpt_path
 
 def load_checkpoint(path, net, opt, device):

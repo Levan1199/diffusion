@@ -5,7 +5,7 @@
 #SBATCH --cpus-per-task=4                # Number of CPU cores per task
 #SBATCH --mem=16G                          # Total memory required (adjust as necessary)
 #SBATCH --gpus=1                            # Number of GPUs
-#SBATCH --time=06:30:00                     # Time limit hrs:min:sec
+#SBATCH --time=2:30:00                     # Time limit hrs:min:sec
 #SBATCH --mail-user=hungle99@yorku.ca
 #SBATCH --mail-type=ALL
 
@@ -16,9 +16,10 @@ source /home/$USER/scratch/hungProject/bin/activate
 pip install --no-index --upgrade pip
 pip install --no-index torch torchvision
 
-pip install einops tqdm numpy argparse PIL matplotlib # insntal packages
+pip install einops tqdm numpy argparse matplotlib # insntal packages
 
 
 # run LLM
 cd /home/$USER/scratch/diffusion
-python pipeline/train_swin_ae.py --epochs 200 --batch-size 82
+export PYTHONPATH=$(pwd):$PYTHONPATH
+python pipeline/train_swin_ae.py --epochs 500 --batch-size 256 --load-ckpt outputs\swin_ae\ckpt_00_170.pt --lr 0.025
