@@ -22,4 +22,4 @@ pip install einops tqdm numpy argparse matplotlib # insntal packages
 # run LLM
 cd /home/$USER/scratch/diffusion
 export PYTHONPATH=$(pwd):$PYTHONPATH
-python pipeline/train_swin_ae.py --epochs 500 --batch-size 256 --load-ckpt outputs\swin_ae\ckpt_00_170.pt --lr 0.025
+python pipeline/train_swin_ae.py --epochs 500 --batch-size 256 --load-ckpt outputs/swin_ae/ckpt_00_170.pt --lr 0.025
