@@ -57,7 +57,6 @@ def save_checkpoint(save_dir, epoch, net, opt, loss_val):
         "optimizer_state": opt.state_dict(),
         "loss": float(loss_val),
     }, ckpt_path)
-    # also write/overwrite a latest pointer for convenience
     return ckpt_path
 
 def load_checkpoint(path, net, opt, device):
