@@ -5,3 +5,4 @@ test.ipynb
 test_img/
 **/__pycache__/
 *.pyc
+outputs/

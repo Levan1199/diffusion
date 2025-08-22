@@ -25,6 +25,7 @@ def parse_args():
 
 def load_checkpoint(ckpt_path, model, optimizer, device, resume_opt):
     ckpt = torch.load(ckpt_path, map_location=device)
+    print(f"old loss: {ckpt["loss"]}")
     if "model_state_dict" in ckpt:
         print(f"load model state dict")
         model.load_state_dict(ckpt["model_state_dict"], strict=True)
@@ -52,7 +53,7 @@ def main():
     optimizer = optim.Adam(model.parameters(), args.lr)
 
     if args.load_ckpt:
-        print(f"[resume] {args.load_ckpt}")
+        print(f"[resume] {args.load_ckpt} ")
         load_checkpoint(args.load_ckpt, model, optimizer, device, args.resume_optimizer)
 
     print(f"start training, cuda: {torch.cuda.is_available()} using device {device}, num_workers: {args.num_workers}")
@@ -92,7 +93,7 @@ def main():
                 "decoder": model.decoder.state_dict(),
                 "optimizer_state_dict": optimizer.state_dict(),
                 "loss": avg,
-            },os.path.join(args.output_dir, f"ckpt_01_{epoch}.pt"))
+            },os.path.join(args.output_dir, f"ckpt_03_{epoch}.pt"))
 
 
 if __name__ == "__main__":

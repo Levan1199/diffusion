@@ -104,7 +104,7 @@ def main():
         avg = running_loss / len(train_loader)
         print(f"epoch {epoch} | loss {avg:.4f}")
 
-        if epoch % 2 == 0:
+        if epoch % 10== 0:
             torch.save({
                 "epoch": epoch,
                 "model_state_dict": model.state_dict(),

@@ -5,7 +5,7 @@
 #SBATCH --cpus-per-task=8                # Number of CPU cores per task
 #SBATCH --mem=24G                          # Total memory required (adjust as necessary)
 #SBATCH --gpus=1                            # Number of GPUs
-#SBATCH --time=2:30:00                     # Time limit hrs:min:sec
+#SBATCH --time=4:30:00                     # Time limit hrs:min:sec
 #SBATCH --mail-user=hungle99@yorku.ca
 #SBATCH --mail-type=ALL
 
@@ -22,4 +22,4 @@ pip install einops tqdm numpy argparse matplotlib # insntal packages
 # run LLM
 cd /home/$USER/scratch/diffusion
 export PYTHONPATH=$(pwd):$PYTHONPATH
-python pipeline/train_swin_ae.py --epochs 500 --batch-size 256 --load-ckpt outputs/swin_ae/ckpt_00_170.pt --lr 0.025
+python pipeline/train_swin_ae.py --epochs 500 --batch-size 256 --load-ckpt outputs/swin_ae/ckpt_00_170.pt --num-workers 8
