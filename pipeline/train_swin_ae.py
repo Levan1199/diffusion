@@ -43,8 +43,8 @@ def main():
 
     train_dataset = CIFAR10(root='data', train=True, transform=transform, download=True)
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True,num_workers=args.num_workers)
-    print(f"start training, cuda: {torch.cuda.is_available()} using device {device}, num_workers: {args.num_workers}")
-    
+    print(f"start training, cuda: {torch.cuda.is_available()} using device {args.device}, num_workers: {args.num_workers}")
+
     # === Model ===
     device = torch.device(args.device)
     model = SwinAutoencoder().to(device)
