@@ -43,7 +43,8 @@ def main():
 
     train_dataset = CIFAR10(root='data', train=True, transform=transform, download=True)
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True,num_workers=args.num_workers)
-
+    print(f"start training, cuda: {torch.cuda.is_available()} using device {device}, num_workers: {args.num_workers}")
+    
     # === Model ===
     device = torch.device(args.device)
     model = SwinAutoencoder().to(device)
@@ -56,7 +57,6 @@ def main():
         print(f"[resume] {args.load_ckpt} ")
         load_checkpoint(args.load_ckpt, model, optimizer, device, args.resume_optimizer)
 
-    print(f"start training, cuda: {torch.cuda.is_available()} using device {device}, num_workers: {args.num_workers}")
     for i in range(torch.cuda.device_count()):
         print(i, torch.cuda.get_device_name(i), "VRAM:", torch.cuda.get_device_properties(i).total_memory/1024**3, "GB")
 

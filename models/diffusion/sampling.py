@@ -74,7 +74,7 @@ def load_checkpoint_into(net, ckpt_path, device):
 def main():
     parser = argparse.ArgumentParser(description="EDM Sampler")
     parser.add_argument("--ckpt-path", type=str, required=True)
-    parser.add_argument("--out-dir", type=str, default="samples")
+    parser.add_argument("--out-dir", type=str, default="outputs/diffusion/samples")
     parser.add_argument("--batch-size", type=int, default=16)
     # existing numeric label (kept for compatibility)
     parser.add_argument("--class-label", type=int, default=None,
